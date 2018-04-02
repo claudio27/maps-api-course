@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Starter Code</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }   
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyBsYVLaGllEz-XZYoF6xv_wqPsrG0k7oFs"></script>
+    <script src="https://mapstechnical.appspot.com/scripts/mapstechnical.js"></script>
+    <script src="https://mapstechnical.appspot.com/scripts/validate_geocoding.js"></script>
+    
+    
+    <script>
+	var map, geocoder, marker, infowindow;
+
+  
+	function initialize() {
+
+  	  var mapOptions = {
+  	    zoom: 9,
+  	    center: new google.maps.LatLng(-34.397, 150.644),
+  	    mapTypeId: google.maps.MapTypeId.ROADMAP
+  	  };
+  			
+	  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+	  infowindow = new google.maps.InfoWindow();
+	  
+	  //initial marker position
+	  marker = new google.maps.Marker({
+            map: map, 
+            position: new google.maps.LatLng(0,0)
+      });
+    	
+        geocoder = new google.maps.Geocoder();
+    //insert event listener here
+      google.maps.event.addListener(map, 'click', function(event) {
+    // update marker position using event.latLng
+        //marker.setPosition(event.latLng);
+
+
+        geocoder.geocode({'latLng': event.latLng}, function(results, status) {
+         if (status == google.maps.GeocoderStatus.OK) {
+
+         //set the map center to the latlng where the user clicked on map
+          map.setCenter(results[0].geometry.location);
+         //place the marker the latlng where the user clicked on map
+        marker.setPosition(results[0].geometry.location);
+
+         //display formatted address in info window when marker is clicked
+         infowindow.setContent(results[0].formatted_address);
+         infowindow.open(map, marker);
+       }
+         else {
+          alert("Geocoder failed due to: " + status);
+       }
+  });
+
+ 	});
+	  
+  	
+		
+	}
+
+	google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas" style="width:750px; height:550px;"></div>
+  </body>
+</html>      	
+      	
